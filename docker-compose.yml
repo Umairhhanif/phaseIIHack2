@@ -1,9 +1,33 @@
 version: '3.8'
 
 services:
-  # Optional: Local Neon PostgreSQL proxy for development
-  # Neon Serverless PostgreSQL is recommended for production
-  # This is only for local development without internet connection
+  # Backend FastAPI service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: todo-backend
+    ports:
+      - "8000:8000"
+    environment:
+      # Use Neon database (cloud) - recommended
+      DATABASE_URL: ${DATABASE_URL}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+      HOST: 0.0.0.0
+      PORT: 8000
+    volumes:
+      # Mount source code for development hot-reload
+      - ./backend:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - todo-network
+    restart: unless-stopped
+
+  # Optional: Local PostgreSQL for development
+  # Comment this out if using Neon cloud database
   postgres:
     image: postgres:16-alpine
     container_name: todo-postgres-dev
@@ -16,17 +40,23 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U todouser"]
+      test: [ "CMD-SHELL", "pg_isready -U todouser" ]
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - todo-network
+
+networks:
+  todo-network:
+    driver: bridge
 
 volumes:
   postgres_data:
 
-# Usage:
-# 1. Start PostgreSQL: docker-compose up -d
-# 2. Update backend/.env with: DATABASE_URL=postgresql://todouser:todopass@localhost:5432/tododb
-# 3. Run migrations: cd backend && alembic upgrade head
-# 4. Stop PostgreSQL: docker-compose down
-# 5. Clean data: docker-compose down -v
+    # Usage:
+    # 1. Copy .env.docker to .env in project root
+    # 2. Start all services: docker-compose up -d
+    # 3. View logs: docker-compose logs -f backend
+    # 4. Stop services: docker-compose down
+    # 5. Rebuild after code changes: docker-compose up -d --build backend
