@@ -1,5 +1,5 @@
 # Multi-stage build for Python FastAPI application
-FROM python:3.13-slim as builder
+FROM python:3.13-slim AS builder
 
 # Set working directory
 WORKDIR /app
@@ -12,13 +12,9 @@ RUN apt-get update && apt-get install -y \
 
 # Copy dependency files
 COPY pyproject.toml ./
-COPY uv.lock ./
-
-# Install uv package manager
-RUN pip install --no-cache-dir uv
 
 # Install Python dependencies
-RUN uv pip install --system --no-cache -r uv.lock
+RUN pip install --no-cache-dir -e .
 
 # Production stage
 FROM python:3.13-slim
@@ -28,6 +24,7 @@ WORKDIR /app
 # Install runtime dependencies
 RUN apt-get update && apt-get install -y \
     postgresql-client \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy installed packages from builder
@@ -46,7 +43,7 @@ EXPOSE 8000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD python -c "import requests; requests.get('http://localhost:8000/health')" || exit 1
+    CMD curl -f http://localhost:8000/health || exit 1
 
 # Run the application
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
