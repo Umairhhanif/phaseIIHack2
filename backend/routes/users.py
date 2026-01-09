@@ -68,38 +68,45 @@ def user_to_dict(user: User) -> dict:
 # Endpoints
 @router.post("/signup", response_model=AuthResponse, status_code=201)
 async def signup(
-    data: SignupRequest,
-    session: Session = Depends(get_session),
+    data: SignupRequest, session: Session = Depends(get_session)
 ) -> AuthResponse:
     """
-    Create new user account and issue JWT token.
+    Register new user account.
 
-    Functional Requirements: FR-001, FR-002, FR-003
+    Functional Requirements: FR-001, FR-002
+    Security: Passwords hashed with bcrypt, emails stored lowercase
     """
-    # Check if email already exists (case-insensitive)
-    existing_user = session.exec(
-        select(User).where(func.lower(User.email) == data.email.lower())
+    # Validate email format
+    try:
+        EmailStr._validate(data.email)
+    except Exception:
+        raise ValidationError("Invalid email format")
+
+    # Check for existing user (case-insensitive email)
+    existing = session.exec(
+        select(User).where(User.email == data.email.lower())
     ).first()
 
-    if existing_user:
-        raise BadRequestError("Email already registered", {"field": "email"})
+    if existing:
+        raise ValidationError("Email already registered")
 
     # Hash password
     password_hash = hash_password(data.password)
 
-    # Create user
-    user = User(
-        email=data.email.lower(),  # Store email in lowercase
-        password_hash=password_hash,
-        name=data.name.strip(),
-    )
+    # Create user using dict to avoid Pydantic v2 default_factory issues
+    user_dict = {
+        "email": data.email.lower(),  # Store email in lowercase
+        "password_hash": password_hash,
+        "name": data.name.strip(),
+    }
+    user = User.model_validate(user_dict)
 
     session.add(user)
     session.commit()
     session.refresh(user)
 
-    # Generate JWT token
-    token = create_jwt_token(user.id, user.email)
+    # Generate JWT
+    token = create_jwt_token(str(user.id), user.email)
 
     return AuthResponse(token=token, user=user_to_dict(user))
 
