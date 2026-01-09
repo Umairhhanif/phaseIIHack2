@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  # Optional: Local Neon PostgreSQL proxy for development
+  # Neon Serverless PostgreSQL is recommended for production
+  # This is only for local development without internet connection
+  postgres:
+    image: postgres:16-alpine
+    container_name: todo-postgres-dev
+    environment:
+      POSTGRES_USER: todouser
+      POSTGRES_PASSWORD: todopass
+      POSTGRES_DB: tododb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U todouser"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+
+# Usage:
+# 1. Start PostgreSQL: docker-compose up -d
+# 2. Update backend/.env with: DATABASE_URL=postgresql://todouser:todopass@localhost:5432/tododb
+# 3. Run migrations: cd backend && alembic upgrade head
+# 4. Stop PostgreSQL: docker-compose down
+# 5. Clean data: docker-compose down -v

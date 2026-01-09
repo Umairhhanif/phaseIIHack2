@@ -11,12 +11,23 @@ import type {
   SigninRequest,
   SignupRequest,
   Task,
+  TaskListResponse,
+  TaskFilters,
+  TaskSort,
   UpdateTaskRequest,
   User,
+  Tag,
+  TagDetail,
+  CreateTagRequest,
+  UpdateTagRequest,
 } from "./types";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+/**********************************************************************
+ * Helper Functions
+ **********************************************************************/
 
 /**
  * Get JWT token from localStorage.
@@ -46,6 +57,27 @@ export function clearAuthToken(): void {
     // Clear cookie by setting expired date
     document.cookie = "auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
   }
+}
+
+/**
+ * Build query string from filters and sort options.
+ */
+function buildQueryString(params: Record<string, any>): string {
+  const searchParams = new URLSearchParams();
+
+  for (const [key, value] of Object.entries(params)) {
+    if (value === undefined || value === null || value === "") continue;
+
+    if (Array.isArray(value)) {
+      for (const v of value) {
+        searchParams.append(key, String(v));
+      }
+    } else {
+      searchParams.set(key, String(value));
+    }
+  }
+
+  return searchParams.toString();
 }
 
 /**
@@ -117,6 +149,11 @@ async function apiFetch<T>(
       throw error;
     }
 
+    // Handle 204 No Content
+    if (response.status === 204) {
+      return undefined as T;
+    }
+
     return response.json();
   } catch (error) {
     // Handle network errors
@@ -127,9 +164,9 @@ async function apiFetch<T>(
   }
 }
 
-/**
+/**********************************************************************
  * Authentication API
- */
+ **********************************************************************/
 export const authAPI = {
   async signup(data: SignupRequest): Promise<AuthResponse> {
     return apiFetch<AuthResponse>("/auth/signup", {
@@ -150,12 +187,40 @@ export const authAPI = {
   },
 };
 
-/**
- * Tasks API
- */
+/**********************************************************************
+ * Tasks API (Extended with Filter/Sort/Search)
+ **********************************************************************/
 export const tasksAPI = {
-  async list(userId: string): Promise<Task[]> {
-    return apiFetch<Task[]>(`/api/${userId}/tasks`);
+  /**
+   * List tasks with optional filtering, searching, and sorting.
+   */
+  async list(
+    userId: string,
+    filters?: TaskFilters,
+    sort?: TaskSort,
+    limit = 50,
+    offset = 0
+  ): Promise<TaskListResponse> {
+    const params: Record<string, any> = {
+      limit,
+      offset,
+    };
+
+    if (filters) {
+      if (filters.search) params.search = filters.search;
+      if (filters.status && filters.status !== "all") params.status = filters.status;
+      if (filters.priority && filters.priority !== "all") params.priority = filters.priority;
+      if (filters.tag_ids && filters.tag_ids.length > 0) {
+        params.tag_id = filters.tag_ids;
+      }
+    }
+
+    if (sort) params.sort = sort;
+
+    const queryString = buildQueryString(params);
+    const endpoint = `/api/${userId}/tasks${queryString ? `?${queryString}` : ""}`;
+
+    return apiFetch<TaskListResponse>(endpoint);
   },
 
   async get(userId: string, taskId: string): Promise<Task> {
@@ -180,6 +245,20 @@ export const tasksAPI = {
     });
   },
 
+  async updatePriority(userId: string, taskId: string, priority: string): Promise<Task> {
+    return apiFetch<Task>(`/api/${userId}/tasks/${taskId}/priority`, {
+      method: "PATCH",
+      body: JSON.stringify({ priority }),
+    });
+  },
+
+  async updateDueDate(userId: string, taskId: string, dueDate: string | null): Promise<Task> {
+    return apiFetch<Task>(`/api/${userId}/tasks/${taskId}/due-date`, {
+      method: "PATCH",
+      body: JSON.stringify({ due_date: dueDate }),
+    });
+  },
+
   async toggle(userId: string, taskId: string): Promise<Task> {
     return apiFetch<Task>(`/api/${userId}/tasks/${taskId}/toggle`, {
       method: "PATCH",
@@ -188,6 +267,71 @@ export const tasksAPI = {
 
   async delete(userId: string, taskId: string): Promise<void> {
     return apiFetch<void>(`/api/${userId}/tasks/${taskId}`, {
+      method: "DELETE",
+    });
+  },
+};
+
+/**********************************************************************
+ * Tags API
+ **********************************************************************/
+export const tagsAPI = {
+  /**
+   * List all tags for a user.
+   */
+  async list(
+    userId: string,
+    options?: { withCounts?: boolean; search?: string }
+  ): Promise<TagDetail[]> {
+    const params: Record<string, any> = {};
+    if (options?.withCounts) params.with_counts = "true";
+    if (options?.search) params.q = options.search;
+
+    const queryString = buildQueryString(params);
+    const endpoint = `/api/${userId}/tags${queryString ? `?${queryString}` : ""}`;
+
+    const response = await apiFetch<{ tags: TagDetail[] }>(endpoint);
+    return response.tags;
+  },
+
+  async get(userId: string, tagId: string): Promise<Tag> {
+    return apiFetch<Tag>(`/api/${userId}/tags/${tagId}`);
+  },
+
+  async create(userId: string, data: CreateTagRequest): Promise<Tag> {
+    return apiFetch<Tag>(`/api/${userId}/tags`, {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  },
+
+  async update(userId: string, tagId: string, data: UpdateTagRequest): Promise<Tag> {
+    return apiFetch<Tag>(`/api/${userId}/tags/${tagId}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
+  },
+
+  async delete(userId: string, tagId: string): Promise<void> {
+    return apiFetch<void>(`/api/${userId}/tags/${tagId}`, {
+      method: "DELETE",
+    });
+  },
+
+  /**
+   * Add a tag to a task.
+   */
+  async addTagToTask(userId: string, tagId: string, taskId: string): Promise<void> {
+    return apiFetch<void>(`/api/${userId}/tags/${tagId}/tasks/${taskId}`, {
+      method: "POST",
+    });
+  },
+
+  /**
+   * Remove a tag from a task.
+   */
+  async removeTagFromTask(userId: string, tagId: string, taskId: string): Promise<void> {
+    return apiFetch<void>(`/api/${userId}/tags/${tagId}/tasks/${taskId}`, {
       method: "DELETE",
     });
   },

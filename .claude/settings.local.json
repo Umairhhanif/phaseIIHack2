@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git fetch:*)",
+      "Bash(ls:*)",
+      "Bash(powershell -ExecutionPolicy Bypass -File .specify/scripts/powershell/create-new-feature.ps1:*)",
+      "Bash(powershell -ExecutionPolicy Bypass -File .specify/scripts/powershell/setup-plan.ps1 -Json)",
+      "Bash(powershell -ExecutionPolicy Bypass -File:*)",
+      "Bash(bash:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(mkdir:*)",
+      "Bash(npx create-next-app@latest:*)",
+      "Bash(pip install:*)",
+      "Bash(alembic init:*)",
+      "Bash(powershell -ExecutionPolicy Bypass -Command \"cd ''E:\\\\Hackathon_II\\\\phase2\\\\backend''; echo ''Backend .env:'' && Get-Content .env | Where-Object { $_-notmatch ''^#'' -and $_-match ''\\\\S'' }\")",
+      "Bash(powershell -ExecutionPolicy Bypass -Command \"cd ''E:\\\\Hackathon_II\\\\phase2\\\\backend''; Get-Content .env | Where-Object { $_-notmatch ''^#'' -and $_-match ''\\\\S'' }\")",
+      "Bash(curl:*)",
+      "Bash(npx tsc:*)",
+      "Bash(powershell -ExecutionPolicy Bypass -Command \"cd ''E:\\\\Hackathon_II\\\\phase2\\\\frontend''; npx tsc --noEmit 2>&1 | Select-Object -First 30\")",
+      "Bash(powershell -ExecutionPolicy Bypass -Command \"Set-Location ''E:\\\\Hackathon_II\\\\phase2\\\\frontend''; npx tsc --noEmit 2>&1\")",
+      "Bash(git add:*)",
+      "Bash(uv run alembic:*)",
+      "Bash(python -m py_compile:*)",
+      "Bash(docker-compose up:*)",
+      "Bash(docker compose:*)",
+      "Bash(export DATABASE_URL=\"postgresql://neondb_owner:npg_wyfXmVp2iOz9@ep-jolly-shadow-a4mznfqu-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require\")",
+      "Bash(python -m alembic:*)"
+    ]
+  }
+}

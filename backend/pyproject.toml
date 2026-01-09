@@ -1,0 +1,29 @@
+[project]
+name = "todo-backend"
+version = "1.0.0"
+description = "Todo App - Phase II Backend API"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi==0.115.0",
+    "uvicorn[standard]==0.32.0",
+    "sqlmodel==0.0.22",
+    "pyjwt==2.9.0",
+    "bcrypt==4.2.0",
+    "python-dotenv==1.0.1",
+    "pydantic[email]==2.10.0",
+    "alembic==1.13.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["lib*", "routes*", "migrations*"]
+exclude = ["*.tests", "*.tests.*", "tests.*", "tests"]
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
