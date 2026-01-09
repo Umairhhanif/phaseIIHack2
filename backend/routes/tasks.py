@@ -14,7 +14,7 @@ from sqlmodel import Session, select, and_
 
 from database import get_session
 from lib.errors import ForbiddenError, NotFoundError, ValidationError
-from models import Priority, Task, TaskTag, User
+from models import Priority, Task, TaskTag, User, Tag
 from routes.auth import verify_jwt
 
 router = APIRouter()
