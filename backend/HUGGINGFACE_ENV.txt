@@ -1,0 +1,8 @@
+# Environment variables for Hugging Face Spaces
+# Copy these values to your Space's environment variables
+
+DATABASE_URL=postgresql://neondb_owner:npg_wyfXmVp2iOz9@ep-jolly-shadow-a4mznfqu-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require
+BETTER_AUTH_SECRET=iylYiaVeVL60NT2Us9teM549Ick1IuMq
+FRONTEND_URL=https://phase-ii-hack2.vercel.app
+HOST=0.0.0.0
+PORT=7860
