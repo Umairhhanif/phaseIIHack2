@@ -164,12 +164,13 @@ async def create_tag(
     if existing:
         raise ValidationError(f"Tag '{name}' already exists")
 
-    # Create tag
-    tag = Tag(
-        user_id=user_uuid,
-        name=name,
-        color=data.color,
-    )
+    # Create tag using dict to avoid Pydantic v2 default_factory issues
+    tag_dict = {
+        "user_id": user_uuid,
+        "name": name,
+        "color": data.color,
+    }
+    tag = Tag.model_validate(tag_dict)
 
     session.add(tag)
     session.commit()

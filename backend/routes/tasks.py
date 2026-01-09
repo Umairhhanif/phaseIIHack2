@@ -304,15 +304,16 @@ async def create_task(
     # Validate and get tag UUIDs
     tag_uuids = validate_tag_ids(data.tag_ids, user_uuid, session)
 
-    # Create task
-    task = Task(
-        user_id=user_uuid,
-        title=title,
-        description=data.description,
-        completed=False,
-        priority=priority,
-        due_date=due_date,
-    )
+    # Create task using dict to avoid Pydantic v2 default_factory issues
+    task_dict = {
+        "user_id": user_uuid,
+        "title": title,
+        "description": data.description,
+        "completed": False,
+        "priority": priority,
+        "due_date": due_date,
+    }
+    task = Task.model_validate(task_dict)
 
     session.add(task)
     session.flush()  # Get the task ID
