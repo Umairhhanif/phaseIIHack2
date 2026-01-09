@@ -24,7 +24,7 @@ export default function EditTaskPage() {
     title: "",
     description: "",
   });
-  const [priority, setPriority] = useState<Priority>("medium");
+  const [priority, setPriority] = useState<Priority>("MEDIUM");
   const [selectedTags, setSelectedTags] = useState<(Tag | TagSummary)[]>([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -46,7 +46,7 @@ export default function EditTaskPage() {
           title: task.title,
           description: task.description || "",
         });
-        setPriority(task.priority || "medium");
+        setPriority(task.priority || "MEDIUM");
         setSelectedTags(task.tags || []);
         setLoading(false);
       } catch (err: any) {

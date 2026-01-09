@@ -21,7 +21,7 @@ export default function CreateTaskPage() {
     title: "",
     description: "",
   });
-  const [priority, setPriority] = useState<Priority>("medium");
+  const [priority, setPriority] = useState<Priority>("MEDIUM");
   const [selectedTags, setSelectedTags] = useState<(Tag | TagSummary)[]>([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -217,8 +217,8 @@ export default function CreateTaskPage() {
                 <label
                   htmlFor="title"
                   className={`absolute left-4 transition-all duration-200 pointer-events-none ${focusedField === "title" || formData.title
-                      ? "-top-2.5 text-xs font-semibold px-2 bg-white rounded"
-                      : "top-4 text-base"
+                    ? "-top-2.5 text-xs font-semibold px-2 bg-white rounded"
+                    : "top-4 text-base"
                     }`}
                   style={{
                     color:
@@ -272,8 +272,8 @@ export default function CreateTaskPage() {
                 <label
                   htmlFor="description"
                   className={`absolute left-4 transition-all duration-200 pointer-events-none ${focusedField === "description" || formData.description
-                      ? "-top-2.5 text-xs font-semibold px-2 bg-white rounded"
-                      : "top-4 text-base"
+                    ? "-top-2.5 text-xs font-semibold px-2 bg-white rounded"
+                    : "top-4 text-base"
                     }`}
                   style={{
                     color:

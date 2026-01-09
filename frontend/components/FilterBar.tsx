@@ -24,9 +24,9 @@ const STATUS_OPTIONS = [
 
 const PRIORITY_OPTIONS: { value: Priority | "all"; label: string }[] = [
   { value: "all", label: "All Priorities" },
-  { value: "high", label: "High" },
-  { value: "medium", label: "Medium" },
-  { value: "low", label: "Low" },
+  { value: "HIGH", label: "High" },
+  { value: "MEDIUM", label: "Medium" },
+  { value: "LOW", label: "Low" },
 ];
 
 export function FilterBar({ filters, onChange, className = "" }: FilterBarProps) {
@@ -166,11 +166,10 @@ export function FilterBar({ filters, onChange, className = "" }: FilterBarProps)
                   key={option.value}
                   type="button"
                   onClick={() => handleStatusChange(option.value)}
-                  className={`w-full px-4 py-2 text-left text-sm transition-colors ${
-                    (filters.status || "all") === option.value
+                  className={`w-full px-4 py-2 text-left text-sm transition-colors ${(filters.status || "all") === option.value
                       ? "bg-blue-50 text-blue-700"
                       : "hover:bg-gray-50"
-                  }`}
+                    }`}
                 >
                   {option.label}
                 </button>
@@ -217,21 +216,19 @@ export function FilterBar({ filters, onChange, className = "" }: FilterBarProps)
                   key={option.value}
                   type="button"
                   onClick={() => handlePriorityChange(option.value)}
-                  className={`w-full px-4 py-2 text-left text-sm flex items-center gap-2 transition-colors ${
-                    (filters.priority || "all") === option.value
+                  className={`w-full px-4 py-2 text-left text-sm flex items-center gap-2 transition-colors ${(filters.priority || "all") === option.value
                       ? "bg-blue-50 text-blue-700"
                       : "hover:bg-gray-50"
-                  }`}
+                    }`}
                 >
                   {option.value !== "all" && (
                     <span
-                      className={`w-2 h-2 rounded-full ${
-                        option.value === "high"
+                      className={`w-2 h-2 rounded-full ${option.value === "HIGH"
                           ? "bg-red-500"
-                          : option.value === "medium"
-                          ? "bg-amber-500"
-                          : "bg-green-500"
-                      }`}
+                          : option.value === "MEDIUM"
+                            ? "bg-amber-500"
+                            : "bg-green-500"
+                        }`}
                     />
                   )}
                   {option.label}
@@ -284,18 +281,16 @@ export function FilterBar({ filters, onChange, className = "" }: FilterBarProps)
                     key={tag.id}
                     type="button"
                     onClick={() => handleToggleTag(tag.id)}
-                    className={`w-full px-3 py-2 text-left text-sm flex items-center gap-2 transition-colors ${
-                      filters.tag_ids?.includes(tag.id)
+                    className={`w-full px-3 py-2 text-left text-sm flex items-center gap-2 transition-colors ${filters.tag_ids?.includes(tag.id)
                         ? "bg-blue-50"
                         : "hover:bg-gray-50"
-                    }`}
+                      }`}
                   >
                     <div
-                      className={`w-4 h-4 rounded border flex items-center justify-center ${
-                        filters.tag_ids?.includes(tag.id)
+                      className={`w-4 h-4 rounded border flex items-center justify-center ${filters.tag_ids?.includes(tag.id)
                           ? "bg-blue-500 border-blue-500"
                           : "border-gray-300"
-                      }`}
+                        }`}
                     >
                       {filters.tag_ids?.includes(tag.id) && (
                         <svg
