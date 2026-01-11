@@ -18,8 +18,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 COHERE_API_KEY = os.getenv("COHERE_API_KEY")
-if not COHERE_API_KEY:
-    raise ValueError("COHERE_API_KEY environment variable not set")
+
+# Warn but don't crash if API key is missing - allow app to start
+if not COHERE_API_KEY or COHERE_API_KEY == "your-cohere-api-key-here":
+    print("WARNING: COHERE_API_KEY not set. Chatbot will not function until API key is configured.")
+    COHERE_API_KEY = None
 
 
 class CohereClient:
@@ -32,6 +35,12 @@ class CohereClient:
 
     def __init__(self):
         """Initialize Cohere client."""
+        if not COHERE_API_KEY:
+            # API key not set, client won't work but app can still start
+            self.client = None
+            self.tools = []
+            return
+            
         self.client = cohere.Client(COHERE_API_KEY)
         # Convert OpenAI-format tools to Cohere format
         openai_tools = self._get_tool_schemas()
@@ -361,6 +370,10 @@ You can use tools by calling them with the appropriate parameters. Each tool cal
         """
         if history is None:
             history = []
+
+        # Check if API key was configured
+        if not self.client:
+            return ("Sorry, the chatbot is not configured. The administrator needs to add a COHERE_API_KEY to the environment variables.", [])
 
         all_tool_calls = []
         current_message = user_message
