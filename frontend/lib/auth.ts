@@ -17,6 +17,13 @@ export function getAuthToken(): string | null {
 }
 
 /**
+ * Get auth token from storage (alias for getAuthToken).
+ */
+export function getToken(): string | null {
+  return getAuthToken();
+}
+
+/**
  * Set auth token in storage.
  */
 export function setAuthToken(token: string): void {
@@ -58,4 +65,13 @@ export function getUserIdFromToken(token: string): string | null {
   } catch {
     return null;
   }
+}
+
+/**
+ * Get current user ID from stored token.
+ */
+export function getUserId(): string | null {
+  const token = getAuthToken();
+  if (!token) return null;
+  return getUserIdFromToken(token);
 }

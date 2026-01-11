@@ -31,7 +31,7 @@ app.add_exception_handler(RequestValidationError, validation_exception_handler)
 frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[frontend_url],  # Must be specific when using credentials
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -47,11 +47,12 @@ async def health_check():
 
 
 # Register route blueprints
-from routes import tasks, users, tags
+from routes import tasks, users, tags, chat
 
 app.include_router(users.router, prefix="/auth", tags=["Authentication"])
 app.include_router(tasks.router, prefix="/api", tags=["Tasks"])
 app.include_router(tags.router, prefix="/api", tags=["Tags"])
+app.include_router(chat.router, tags=["Chat"])
 
 
 @app.on_event("startup")
@@ -67,6 +68,11 @@ async def startup_event():
 
     print("All required environment variables are set")
     print(f"CORS configured for: {frontend_url}")
+
+    # Warn if Cohere API key is not set (chatbot will use fallback mode)
+    if not os.getenv("COHERE_API_KEY") or os.getenv("COHERE_API_KEY") == "your-cohere-api-key-here":
+        print("WARNING: COHERE_API_KEY not set. Chatbot will not function properly.")
+        print("Get your API key from https://dashboard.cohere.com/api-keys")
 
 
 if __name__ == "__main__":

@@ -1,10 +1,11 @@
 /**
- * Tag input component with autocomplete for selecting tags - Beautiful enhanced version.
+ * Tag input component with autocomplete - Dark neon theme.
  */
 
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { Plus, Search, Info } from "lucide-react";
 import type { Tag, TagDetail, TagSummary } from "@/lib/types";
 import { tagsAPI } from "@/lib/api";
 import { getUserIdFromToken } from "@/lib/auth";
@@ -39,7 +40,7 @@ export function TagInput({
   const [isOpen, setIsOpen] = useState(false);
   const [suggestions, setSuggestions] = useState<TagDetail[]>([]);
   const [loading, setLoading] = useState(false);
-  const [newTagColor, setNewTagColor] = useState(TAG_COLORS[0].color);
+  const [newTagColor, setNewTagColor] = useState(TAG_COLORS[9].color); // Purple default
   const [isCreating, setIsCreating] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -64,7 +65,7 @@ export function TagInput({
         const unselected = tags.filter(
           (t) => !selectedTags.some((st) => st.id === t.id)
         );
-        setSuggestions(unselected.slice(5));
+        setSuggestions(unselected.slice(0, 5));
       } catch (err) {
         console.error("Failed to load tags:", err);
       } finally {
@@ -163,11 +164,11 @@ export function TagInput({
       <div
         className="flex flex-wrap gap-2 p-3 rounded-xl min-h-[56px] transition-all duration-300"
         style={{
-          background: "white",
-          border: isFocused ? "2px solid #a855f7" : "2px solid #e5e7eb",
+          background: 'rgba(0, 0, 0, 0.2)',
+          border: isFocused ? '1px solid rgba(139, 92, 246, 0.5)' : '1px solid rgba(99, 102, 241, 0.2)',
           boxShadow: isFocused
-            ? "0 0 0 4px rgba(168, 85, 247, 0.1)"
-            : "0 1px 2px rgba(0,0,0,0.05)",
+            ? '0 0 20px rgba(139, 92, 246, 0.2)'
+            : 'none',
         }}
       >
         {/* Selected tags with animation */}
@@ -205,14 +206,14 @@ export function TagInput({
             placeholder={
               selectedTags.length === 0 ? "Type to add or create tags..." : "Add more..."
             }
-            className="flex-1 outline-none text-sm bg-transparent min-w-[100px] placeholder-gray-400"
+            className="flex-1 outline-none text-sm bg-transparent min-w-[100px] text-white placeholder-slate-500"
           />
         </div>
       </div>
 
       {/* Color picker row */}
       <div className="flex items-center gap-3 mt-3 px-1">
-        <span className="text-xs font-medium text-gray-500">New tag color:</span>
+        <span className="text-xs font-medium text-slate-500">New tag color:</span>
         <div className="flex gap-1.5">
           {TAG_COLORS.map(({ color, name }) => (
             <button
@@ -220,19 +221,19 @@ export function TagInput({
               type="button"
               onClick={() => setNewTagColor(color)}
               title={name}
-              className="relative w-6 h-6 rounded-full transition-all duration-200 hover:scale-110"
+              className="relative w-5 h-5 rounded-full transition-all duration-200 hover:scale-110"
               style={{
                 backgroundColor: color,
                 boxShadow:
                   newTagColor === color
-                    ? `0 0 0 2px white, 0 0 0 4px ${color}`
-                    : "0 2px 4px rgba(0,0,0,0.1)",
-                transform: newTagColor === color ? "scale(1.15)" : "scale(1)",
+                    ? `0 0 0 2px #1e293b, 0 0 0 3px ${color}, 0 0 15px ${color}`
+                    : `0 0 8px ${color}40`,
+                transform: newTagColor === color ? "scale(1.2)" : "scale(1)",
               }}
             >
               {newTagColor === color && (
                 <svg
-                  className="absolute inset-0 m-auto w-3 h-3 text-white"
+                  className="absolute inset-0 m-auto w-2.5 h-2.5 text-white"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -257,53 +258,34 @@ export function TagInput({
             className="fixed inset-0 z-10"
             onClick={() => setIsOpen(false)}
           />
-          <div
-            className="absolute left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-20 max-h-60 overflow-auto"
-            style={{
-              animation: "slideDown 0.2s ease-out",
-            }}
-          >
+          <div className="absolute left-0 right-0 mt-2 neon-card !rounded-2xl py-2 z-20 max-h-60 overflow-auto animate-slide-up">
             {/* Create new tag option */}
             {query.trim() && query.length >= 1 && query.length <= 50 && (
               <button
                 type="button"
                 onClick={handleCreateTag}
                 disabled={isCreating}
-                className="w-full px-4 py-3 text-left text-sm flex items-center gap-3 hover:bg-gray-50 transition-all duration-200 group"
+                className="w-full px-4 py-3 text-left text-sm flex items-center gap-3 hover:bg-slate-800/50 transition-all duration-200 group"
               >
                 <span
                   className="w-5 h-5 rounded-full flex items-center justify-center transition-transform duration-200 group-hover:scale-110"
-                  style={{ backgroundColor: newTagColor }}
+                  style={{
+                    backgroundColor: newTagColor,
+                    boxShadow: `0 0 10px ${newTagColor}60`
+                  }}
                 >
-                  <svg
-                    className="w-3 h-3 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                    />
-                  </svg>
+                  <Plus className="w-3 h-3 text-white" />
                 </span>
                 <span>
-                  <span className="text-gray-600">Create </span>
+                  <span className="text-slate-400">Create </span>
                   <span
                     className="font-semibold"
-                    style={{
-                      background: `linear-gradient(135deg, ${newTagColor} 0%, ${newTagColor}dd 100%)`,
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      backgroundClip: "text",
-                    }}
+                    style={{ color: newTagColor }}
                   >
                     "{query.trim()}"
                   </span>
                 </span>
-                <kbd className="ml-auto px-2 py-0.5 text-xs bg-gray-100 rounded text-gray-500">
+                <kbd className="ml-auto px-2 py-0.5 text-xs bg-slate-800 border border-slate-700 rounded text-slate-400">
                   Enter
                 </kbd>
               </button>
@@ -311,31 +293,13 @@ export function TagInput({
 
             {/* Divider */}
             {query.trim() && filteredSuggestions.length > 0 && (
-              <div className="border-t border-gray-100 my-1" />
+              <div className="border-t border-slate-700/50 my-1" />
             )}
 
             {/* Matching tags */}
             {loading ? (
-              <div className="px-4 py-3 text-sm text-gray-500 flex items-center gap-2">
-                <svg
-                  className="animate-spin h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
-                </svg>
+              <div className="px-4 py-3 text-sm text-slate-500 flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-slate-700 border-t-violet-500 rounded-full animate-spin" />
                 Searching tags...
               </div>
             ) : filteredSuggestions.length > 0 ? (
@@ -344,51 +308,26 @@ export function TagInput({
                   key={tag.id}
                   type="button"
                   onClick={() => handleSelectTag(tag)}
-                  className="w-full px-4 py-3 text-left text-sm flex items-center gap-3 hover:bg-gray-50 transition-all duration-200"
+                  className="w-full px-4 py-3 text-left text-sm flex items-center gap-3 hover:bg-slate-800/50 transition-all duration-200"
                   style={{ animationDelay: `${index * 30}ms` }}
                 >
                   <TagBadge tag={tag} size="sm" />
                   {tag.task_count !== undefined && tag.task_count > 0 && (
-                    <span className="text-xs text-gray-400 ml-auto px-2 py-0.5 bg-gray-100 rounded-full">
+                    <span className="text-xs text-slate-500 ml-auto px-2 py-0.5 bg-slate-800 border border-slate-700 rounded-full">
                       {tag.task_count} task{tag.task_count !== 1 ? "s" : ""}
                     </span>
                   )}
                 </button>
               ))
             ) : query.trim() ? null : (
-              <div className="px-4 py-3 text-sm text-gray-400 flex items-center gap-2">
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
+              <div className="px-4 py-3 text-sm text-slate-500 flex items-center gap-2">
+                <Info className="w-4 h-4" />
                 Type to search or create a new tag
               </div>
             )}
           </div>
         </>
       )}
-
-      <style jsx>{`
-        @keyframes slideDown {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </div>
   );
 }

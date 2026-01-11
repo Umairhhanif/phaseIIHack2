@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Backend Connection Test</title>
+</head>
+<body>
+    <h1>Backend Connection Test</h1>
+    <button onclick="testConnection()">Test Connection</button>
+    <pre id="result"></pre>
+
+    <script>
+        async function testConnection() {
+            const result = document.getElementById('result');
+            result.textContent = 'Testing...';
+            
+            try {
+                // Test 1: Health endpoint
+                const healthRes = await fetch('http://localhost:8000/health');
+                const healthData = await healthRes.json();
+                result.textContent = `✅ Health check: ${JSON.stringify(healthData)}\n\n`;
+                
+                // Test 2: OPTIONS request
+                const optionsRes = await fetch('http://localhost:8000/api/test/chat', {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Origin': 'http://localhost:3000',
+                        'Access-Control-Request-Method': 'POST',
+                        'Access-Control-Request-Headers': 'content-type,authorization'
+                    }
+                });
+                result.textContent += `✅ OPTIONS: ${optionsRes.status} ${optionsRes.statusText}\n\n`;
+                
+                // Test 3: POST with credentials
+                const postRes = await fetch('http://localhost:8000/api/test/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer test-token'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ message: 'test' })
+                });
+                
+                const postData = await postRes.text();
+                result.textContent += `POST: ${postRes.status} ${postRes.statusText}\nResponse: ${postData}`;
+                
+            } catch (error) {
+                result.textContent += `\n\n❌ Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

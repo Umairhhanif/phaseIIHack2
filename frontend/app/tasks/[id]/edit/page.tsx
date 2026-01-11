@@ -263,7 +263,8 @@ export default function EditTaskPage() {
         </div>
       </main>
 
-      <style jsx>{`
+      <style dangerouslySetInnerHTML={{
+        __html: `
         .glass-card {
           background: rgba(255, 255, 255, 0.1);
           backdrop-filter: blur(20px);
@@ -326,7 +327,7 @@ export default function EditTaskPage() {
         .animate-shake {
           animation: shake 0.5s ease-in-out;
         }
-      `}</style>
+      `}} />
     </div>
   );
 }

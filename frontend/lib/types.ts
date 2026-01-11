@@ -1,8 +1,66 @@
 /**
- * TypeScript type definitions for Todo App Phase II.
+ * TypeScript type definitions for Todo App Phase II + Phase III.
  *
  * Maps to backend SQLModel schemas and API response formats.
  */
+
+/**
+ * Chatbot message roles.
+ */
+export type MessageRole = "user" | "assistant";
+
+/**
+ * Individual message in a conversation thread.
+ *
+ * Corresponds to backend Message model (models.py).
+ */
+export interface ConversationMessage {
+  id: string; // UUID as string
+  conversation_id: string; // UUID as string
+  user_id: string; // UUID as string
+  role: MessageRole;
+  content: string;
+  tool_calls: string | null; // JSON string of tool calls
+  created_at: string; // ISO 8601 datetime
+}
+
+/**
+ * Conversation thread between user and AI.
+ *
+ * Corresponds to backend Conversation model (models.py).
+ */
+export interface Conversation {
+  id: string; // UUID as string
+  user_id: string; // UUID as string
+  title: string | null;
+  created_at: string; // ISO 8601 datetime
+  updated_at: string; // ISO 8601 datetime
+}
+
+/**
+ * Chat API request payload.
+ */
+export interface ChatAPIRequest {
+  message: string;
+  conversation_id?: string | null;
+}
+
+/**
+ * Chat API response.
+ */
+export interface ChatAPIResponse {
+  conversation_id: string;
+  assistant_message: string;
+  tool_calls: any[]; // Array of tool calls made
+}
+
+/**
+ * Conversation list response.
+ */
+export interface ConversationListResponse {
+  conversations: Conversation[];
+  total: number;
+}
 
 /**
  * User account information.

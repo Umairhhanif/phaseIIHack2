@@ -16,24 +16,24 @@ interface PrioritySelectProps {
 
 const PRIORITY_CONFIG: Record<
   string,
-  { label: string; gradient: string; bgColor: string; icon: string }
+  { label: string; textClass: string; glowClass: string; icon: string }
 > = {
   HIGH: {
-    label: "High",
-    gradient: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
-    bgColor: "rgba(239, 68, 68, 0.1)",
+    label: "Critical",
+    textClass: "text-red-400",
+    glowClass: "shadow-[0_0_12px_rgba(239,68,68,0.4)] bg-red-500",
     icon: "🔥",
   },
   MEDIUM: {
-    label: "Medium",
-    gradient: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
-    bgColor: "rgba(245, 158, 11, 0.1)",
+    label: "Standard",
+    textClass: "text-amber-400",
+    glowClass: "shadow-[0_0_12px_rgba(245,158,11,0.4)] bg-amber-500",
     icon: "⚡",
   },
   LOW: {
-    label: "Low",
-    gradient: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-    bgColor: "rgba(16, 185, 129, 0.1)",
+    label: "Backlog",
+    textClass: "text-emerald-400",
+    glowClass: "shadow-[0_0_12px_rgba(16,185,129,0.4)] bg-emerald-500",
     icon: "🌿",
   },
 };
@@ -64,24 +64,15 @@ export function PrioritySelect({
         type="button"
         onClick={() => !disabled && setIsOpen(!isOpen)}
         disabled={disabled}
-        className="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
-        style={{
-          background: config.gradient,
-          border: "none",
-        }}
+        className={`flex items-center gap-3 px-3 py-1.5 rounded-lg bg-slate-800/40 border border-slate-700/50 hover:border-indigo-500/30 transition-all duration-300 group disabled:opacity-50`}
       >
-        <div className="flex items-center gap-3">
-          <span className="text-lg">{config.icon}</span>
-          <div
-            className="w-3 h-3 rounded-full bg-white/30"
-          />
-          <span className="text-white font-semibold drop-shadow-sm">
-            {config.label} Priority
-          </span>
-        </div>
+        <div className={`w-2 h-2 rounded-full ${config.glowClass}`} />
+        <span className={`text-xs font-black uppercase tracking-widest ${config.textClass}`}>
+          {currentPriority}
+        </span>
         {!disabled && (
           <svg
-            className={`w-5 h-5 transition-transform duration-300 text-white ${isOpen ? "rotate-180" : ""}`}
+            className={`w-3.5 h-3.5 transition-transform duration-300 text-slate-500 group-hover:text-indigo-400 ${isOpen ? "rotate-180" : ""}`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -89,30 +80,26 @@ export function PrioritySelect({
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth={2}
+              strokeWidth={3}
               d="M19 9l-7 7-7-7"
             />
           </svg>
         )}
       </button>
 
-      {/* Dropdown */}
+      {/* Premium Neon Dropdown */}
       {isOpen && (
         <>
           <div
-            className="fixed inset-0 z-10"
+            className="fixed inset-0 z-[60]"
             onClick={() => setIsOpen(false)}
           />
           <div
-            className="absolute left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-20 overflow-hidden"
-            style={{
-              animation: "slideDown 0.2s ease-out",
-            }}
+            className="absolute left-0 mt-3 w-44 neon-card !rounded-2xl p-2 z-[70] animate-slide-up"
           >
-            {priorities.map((priority, index) => {
+            {priorities.map((priority) => {
               const pConfig = PRIORITY_CONFIG[priority];
               const isSelected = priority === currentPriority;
-              const isHovered = hoveredPriority === priority;
 
               return (
                 <button
@@ -122,70 +109,15 @@ export function PrioritySelect({
                     onChange(priority);
                     setIsOpen(false);
                   }}
-                  onMouseEnter={() => setHoveredPriority(priority)}
-                  onMouseLeave={() => setHoveredPriority(null)}
-                  className="w-full px-4 py-3 text-left text-sm transition-all duration-200 flex items-center gap-3 relative overflow-hidden"
-                  style={{
-                    background: isSelected
-                      ? pConfig.bgColor
-                      : isHovered
-                        ? "rgba(0,0,0,0.02)"
-                        : "transparent",
-                    animationDelay: `${index * 50}ms`,
-                  }}
+                  className={`w-full px-4 py-2.5 rounded-xl text-left text-xs font-black uppercase tracking-widest flex items-center gap-3 transition-all duration-200 mb-1 last:mb-0 ${isSelected
+                    ? 'bg-indigo-500/10 text-white'
+                    : 'text-slate-500 hover:bg-slate-800/50 hover:text-slate-300'
+                    }`}
                 >
-                  {/* Selection indicator */}
-                  <div
-                    className="absolute left-0 top-0 bottom-0 w-1 transition-all duration-200"
-                    style={{
-                      background: isSelected ? pConfig.gradient : "transparent",
-                      transform: isSelected ? "scaleY(1)" : "scaleY(0)",
-                    }}
-                  />
-
-                  <span className="text-lg">{pConfig.icon}</span>
-                  <div
-                    className="w-3 h-3 rounded-full shadow-sm transition-transform duration-200"
-                    style={{
-                      background: pConfig.gradient,
-                      transform: isHovered || isSelected ? "scale(1.2)" : "scale(1)",
-                    }}
-                  />
-                  <span
-                    className="font-medium"
-                    style={{
-                      background: pConfig.gradient,
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      backgroundClip: "text",
-                    }}
-                  >
-                    {pConfig.label}
-                  </span>
-
-                  {/* Checkmark for selected */}
+                  <div className={`w-2 h-2 rounded-full ${pConfig.glowClass}`} />
+                  {priority}
                   {isSelected && (
-                    <svg
-                      className="w-5 h-5 ml-auto animate-fade-in-up"
-                      style={{
-                        color:
-                          priority === "HIGH"
-                            ? "#ef4444"
-                            : priority === "LOW"
-                              ? "#10b981"
-                              : "#f59e0b",
-                      }}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2.5}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
+                    <div className="ml-auto w-1 h-4 bg-indigo-500 rounded-full shadow-[0_0_8px_rgba(99,102,241,0.5)]" />
                   )}
                 </button>
               );
@@ -193,19 +125,6 @@ export function PrioritySelect({
           </div>
         </>
       )}
-
-      <style jsx>{`
-        @keyframes slideDown {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </div>
   );
 }

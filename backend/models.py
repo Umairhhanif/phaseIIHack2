@@ -1,8 +1,8 @@
 """
-SQLModel database schemas for Todo App Phase II.
+SQLModel database schemas for Todo App Phase II + Phase III.
 
-This module defines the User, Task, Tag, and TaskTag models with proper relationships,
-indexes, and validation rules per data-model.md specification.
+This module defines the User, Task, Tag, TaskTag, Conversation, and Message models
+with proper relationships, indexes, and validation rules per specification.
 """
 
 from datetime import datetime
@@ -11,9 +11,10 @@ from typing import List, Optional, TYPE_CHECKING
 from uuid import UUID, uuid4
 
 from sqlmodel import Field, Relationship, SQLModel
+from sqlalchemy import Index
 
 if TYPE_CHECKING:
-    from models import Task, Tag, User
+    from models import Task, Tag, User, Conversation, Message
 
 
 class Priority(str, Enum):
@@ -246,4 +247,134 @@ class Tag(SQLModel, table=True):
         back_populates="tags",
         link_model=TaskTag,
         sa_relationship_kwargs={"lazy": "selectin"}
+    )
+
+
+class MessageRole(str, Enum):
+    """Message role in conversation."""
+    USER = "user"
+    ASSISTANT = "assistant"
+
+
+class Conversation(SQLModel, table=True):
+    """
+    Conversation thread between a user and the AI chatbot.
+
+    Functional Requirements: US3 - Conversation History Persistence
+    Security: User isolation enforced via user_id foreign key
+    """
+
+    __tablename__ = "conversations"
+
+    # Primary Key
+    id: UUID = Field(
+        default_factory=uuid4,
+        primary_key=True,
+        nullable=False,
+        description="Unique conversation identifier (UUID v4)",
+    )
+
+    # Foreign Key (User Ownership)
+    user_id: UUID = Field(
+        foreign_key="users.id",
+        nullable=False,
+        index=True,
+        description="Owner user ID (enforces data isolation)",
+    )
+
+    # Conversation Content
+    title: Optional[str] = Field(
+        default=None,
+        max_length=100,
+        nullable=True,
+        description="Optional conversation title (auto-generated from first message)",
+    )
+
+    # Timestamps
+    created_at: datetime = Field(
+        default_factory=datetime.utcnow,
+        nullable=False,
+        index=True,
+        description="Conversation creation timestamp (UTC)",
+    )
+    updated_at: datetime = Field(
+        default_factory=datetime.utcnow,
+        nullable=False,
+        index=True,
+        description="Last message timestamp (UTC)",
+    )
+
+    # Relationships
+    messages: List["Message"] = Relationship(
+        back_populates="conversation",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"}
+    )
+
+    # Composite index for efficient user conversation queries
+    __table_args__ = (
+        Index("ix_conversations_user_updated", "user_id", "updated_at"),
+    )
+
+
+class Message(SQLModel, table=True):
+    """
+    Individual message in a conversation thread.
+
+    Functional Requirements: US3 - Conversation History Persistence
+    Security: User isolation enforced via user_id and conversation_id foreign keys
+    """
+
+    __tablename__ = "messages"
+
+    # Primary Key
+    id: UUID = Field(
+        default_factory=uuid4,
+        primary_key=True,
+        nullable=False,
+        description="Unique message identifier (UUID v4)",
+    )
+
+    # Foreign Keys
+    conversation_id: UUID = Field(
+        foreign_key="conversations.id",
+        nullable=False,
+        index=True,
+        description="Associated conversation ID",
+    )
+    user_id: UUID = Field(
+        foreign_key="users.id",
+        nullable=False,
+        index=True,
+        description="Owner user ID (enforces data isolation)",
+    )
+
+    # Message Content
+    role: MessageRole = Field(
+        nullable=False,
+        description="Message role (user or assistant)",
+    )
+    content: str = Field(
+        nullable=False,
+        description="Message text content",
+    )
+    tool_calls: Optional[str] = Field(
+        default=None,
+        nullable=True,
+        description="JSON string of tool calls made by assistant",
+    )
+
+    # Timestamp
+    created_at: datetime = Field(
+        default_factory=datetime.utcnow,
+        nullable=False,
+        index=True,
+        description="Message creation timestamp (UTC)",
+    )
+
+    # Relationships
+    conversation: "Conversation" = Relationship(back_populates="messages")
+
+    # Composite index for efficient history queries
+    __table_args__ = (
+        Index("ix_messages_user_conversation", "user_id", "conversation_id"),
     )
