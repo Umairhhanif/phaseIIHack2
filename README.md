@@ -1,12 +1,14 @@
-# Todo App - Phase II Full-Stack Web Application
+# Todo App - Phase III Full-Stack Web Application
 
-Multi-user task management application with authentication, persistent storage, and complete CRUD operations.
+Multi-user task management application with authentication, persistent storage, complete CRUD operations, and AI-powered conversational task management.
 
 ## Features
 
 - 🔐 **User Authentication** - Secure signup/signin with JWT tokens (Better Auth)
 - ✅ **Task Management** - Create, view, update, delete, and toggle task completion
-- 🔒 **Data Isolation** - Each user can only access their own tasks
+- 🤖 **AI Chatbot** - Conversational task management with natural language (Cohere)
+- 📜 **Conversation History** - Persistent chat history across sessions
+- 🔒 **Data Isolation** - Each user can only access their own tasks and conversations
 - 🚀 **Modern Stack** - Next.js 16+ frontend, FastAPI backend, Neon PostgreSQL
 - 📱 **Responsive UI** - Tailwind CSS with mobile-first design
 - ⚡ **Fast Performance** - Server Components, optimized database queries, connection pooling
@@ -14,16 +16,18 @@ Multi-user task management application with authentication, persistent storage, 
 ## Project Structure
 
 ```
-phase2/
+phase3/
 ├── backend/          # FastAPI backend (Python 3.13+)
 │   ├── main.py       # Application entry point
-│   ├── models.py     # SQLModel database schemas
-│   ├── routes/       # API endpoints (auth, users, tasks)
+│   ├── models.py     # SQLModel database schemas (User, Task, Tag, Conversation, Message)
+│   ├── routes/       # API endpoints (auth, users, tasks, tags, chat)
+│   ├── mcp/          # MCP tools for AI (task management, user identity)
+│   ├── services/     # Business logic (Cohere AI client)
 │   ├── lib/          # Utilities (JWT, error handling)
 │   └── tests/        # pytest test suite
 ├── frontend/         # Next.js 16+ frontend (TypeScript)
 │   ├── app/          # App Router pages
-│   ├── components/   # React components
+│   ├── components/   # React components (including chatbot/)
 │   ├── lib/          # API client, auth config, types
 │   └── tests/        # Jest + Playwright tests
 └── specs/            # Feature specifications and design docs
@@ -45,11 +49,13 @@ See **[Quickstart Guide](specs/001-phase2-fullstack/quickstart.md)** for detaile
 
 1. **Clone and configure environment**:
    ```bash
-   git clone <repo-url> && cd phase2
+   git clone <repo-url> && cd phase3
    cp backend/.env.example backend/.env
    cp frontend/.env.local.example frontend/.env.local
-   # Edit both .env files with your DATABASE_URL and BETTER_AUTH_SECRET
+   # Edit both .env files with your DATABASE_URL, BETTER_AUTH_SECRET, and COHERE_API_KEY
    ```
+
+   **Get Cohere API Key**: Visit https://dashboard.cohere.com/api-keys to get your free API key for the AI chatbot.
 
 2. **Start backend**:
    ```bash
@@ -73,7 +79,27 @@ See **[Quickstart Guide](specs/001-phase2-fullstack/quickstart.md)** for detaile
 - **Backend**: FastAPI with SQLModel ORM, JWT verification middleware
 - **Database**: Neon Serverless PostgreSQL with connection pooling
 - **Authentication**: Better Auth + JWT tokens (7-day expiry)
+- **AI Integration**: Cohere API with MCP tools for conversational task management
 - **API**: RESTful JSON endpoints with user isolation enforcement
+
+## AI Chatbot Usage
+
+After logging in, you'll see an emerald chat button in the bottom-right corner. Click it to open the AI assistant.
+
+**Example commands:**
+- "Add task buy groceries"
+- "Show all my tasks"
+- "Complete buy groceries"
+- "Delete buy groceries"
+- "Change buy groceries to buy organic groceries"
+- "Who am I?"
+
+**Features:**
+- Natural language understanding for task management
+- Conversation history persistence across sessions
+- User identity recognition ("Who am I?")
+- Task filtering and organization
+- Error handling with friendly messages
 
 ## Development
 

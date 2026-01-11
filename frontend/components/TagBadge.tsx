@@ -51,22 +51,23 @@ export function TagBadge({
   className = "",
 }: TagBadgeProps) {
   const config = SIZE_CONFIG[size];
-  const bgColor = tag.color || "#6b7280";
-  const textColor = getContrastColor(bgColor);
+  const tagColor = tag.color || "#6b7280";
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full font-medium ${config.badge} ${className}`}
+      className={`inline-flex items-center gap-2 rounded-lg font-bold uppercase tracking-widest leading-none border transition-all duration-300 ${config.badge} ${className}`}
       style={{
-        backgroundColor: bgColor,
-        color: textColor,
+        backgroundColor: `${tagColor}20`, // 12% opacity
+        color: tagColor,
+        borderColor: `${tagColor}40`, // 25% opacity
+        boxShadow: `0 0 10px ${tagColor}15`,
       }}
     >
-      <span
+      <div
         className={`rounded-full ${config.dot}`}
-        style={{ backgroundColor: textColor, opacity: 0.6 }}
+        style={{ backgroundColor: tagColor, boxShadow: `0 0 8px ${tagColor}` }}
       />
-      <span className="truncate max-w-[100px]">{tag.name}</span>
+      <span className="truncate max-w-[120px]">{tag.name}</span>
       {removable && (
         <button
           type="button"
@@ -74,21 +75,10 @@ export function TagBadge({
             e.stopPropagation();
             onRemove?.();
           }}
-          className="ml-0.5 inline-flex items-center justify-center rounded-full hover:bg-black/20 transition-colors"
-          style={{ width: "16px", height: "16px" }}
+          className="ml-1 p-0.5 rounded-md hover:bg-white/10 transition-colors"
         >
-          <svg
-            className="w-3 h-3"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
+          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       )}

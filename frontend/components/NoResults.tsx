@@ -1,8 +1,10 @@
 /**
- * No results empty state component for search/filter scenarios.
+ * No results empty state component with dark neon theme.
  */
 
 "use client";
+
+import { Search, X } from "lucide-react";
 
 interface NoResultsProps {
   title?: string;
@@ -18,28 +20,24 @@ export function NoResults({
   onClear,
 }: NoResultsProps) {
   return (
-    <div
-      className="rounded-3xl p-12 text-center"
-      style={{
-        background: 'rgba(255, 255, 255, 0.15)',
-        backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255, 255, 255, 0.2)',
-      }}
-    >
+    <div className="neon-card rounded-[2rem] p-12 text-center">
       {/* Empty state illustration */}
       <div
-        className="w-28 h-28 mx-auto mb-8 rounded-3xl flex items-center justify-center"
+        className="w-28 h-28 mx-auto mb-8 rounded-3xl flex items-center justify-center relative"
         style={{
-          background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(240, 147, 251, 0.3) 100%)',
+          background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%)',
+          border: '1px solid rgba(139, 92, 246, 0.3)',
+          boxShadow: '0 0 40px rgba(139, 92, 246, 0.2)',
         }}
       >
-        <span className="text-6xl">🔍</span>
+        <Search className="w-12 h-12 text-violet-400" />
+        <span className="absolute inset-0 rounded-3xl animate-pulse bg-violet-500/10" />
       </div>
 
-      <h3 className="text-3xl font-extrabold text-white mb-3">
+      <h3 className="text-3xl font-extrabold text-white mb-3 tracking-tight">
         {title}
       </h3>
-      <p className="text-white/70 mb-8 text-lg max-w-sm mx-auto">
+      <p className="text-slate-400 mb-8 text-lg max-w-sm mx-auto">
         {searchQuery
           ? `No tasks match "${searchQuery}"`
           : message}
@@ -48,23 +46,9 @@ export function NoResults({
       {onClear && (
         <button
           onClick={onClear}
-          className="inline-flex items-center gap-3 px-8 py-4 rounded-xl font-bold text-white text-lg transition-all duration-300"
-          style={{
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            boxShadow: '0 10px 30px -5px rgba(102, 126, 234, 0.5)',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-3px) scale(1.02)';
-            e.currentTarget.style.boxShadow = '0 15px 40px -5px rgba(102, 126, 234, 0.6)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'translateY(0) scale(1)';
-            e.currentTarget.style.boxShadow = '0 10px 30px -5px rgba(102, 126, 234, 0.5)';
-          }}
+          className="btn-neon inline-flex items-center gap-3 !px-8 !py-4 !text-lg"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-          </svg>
+          <X className="w-5 h-5" />
           Clear Filters
         </button>
       )}

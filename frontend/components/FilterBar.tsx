@@ -128,7 +128,7 @@ export function FilterBar({ filters, onChange, className = "" }: FilterBarProps)
   );
 
   return (
-    <div className={`flex flex-wrap items-center gap-2 ${className}`}>
+    <div className={`flex flex-wrap items-center gap-3 ${className}`}>
       {/* Status Filter */}
       <div ref={statusRef} className="relative">
         <button
@@ -138,7 +138,8 @@ export function FilterBar({ filters, onChange, className = "" }: FilterBarProps)
             setIsPriorityOpen(false);
             setIsTagsOpen(false);
           }}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800/40 border border-slate-700/50 hover:border-indigo-500/50 text-slate-300 font-medium transition-all duration-300 ${filters.status && filters.status !== "all" ? '!border-indigo-500 bg-indigo-500/10 text-indigo-400' : ''
+            }`}
         >
           <span>Status</span>
           <svg
@@ -149,9 +150,6 @@ export function FilterBar({ filters, onChange, className = "" }: FilterBarProps)
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
-          {filters.status && filters.status !== "all" && (
-            <span className="w-2 h-2 bg-blue-500 rounded-full" />
-          )}
         </button>
 
         {isStatusOpen && (
@@ -160,18 +158,21 @@ export function FilterBar({ filters, onChange, className = "" }: FilterBarProps)
               className="fixed inset-0 z-10"
               onClick={() => setIsStatusOpen(false)}
             />
-            <div className="absolute left-0 mt-1 w-40 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20">
+            <div className="absolute left-0 mt-2 w-44 neon-card !rounded-2xl p-2 z-[60] animate-slide-up">
               {STATUS_OPTIONS.map((option) => (
                 <button
                   key={option.value}
                   type="button"
                   onClick={() => handleStatusChange(option.value)}
-                  className={`w-full px-4 py-2 text-left text-sm transition-colors ${(filters.status || "all") === option.value
-                      ? "bg-blue-50 text-blue-700"
-                      : "hover:bg-gray-50"
+                  className={`w-full px-4 py-2.5 rounded-xl text-left text-sm font-bold flex items-center justify-between transition-all duration-200 mb-1 last:mb-0 ${(filters.status || "all") === option.value
+                      ? "bg-indigo-500/10 text-white"
+                      : "text-slate-400 hover:bg-slate-800/50 hover:text-slate-200"
                     }`}
                 >
                   {option.label}
+                  {(filters.status || "all") === option.value && (
+                    <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.5)]" />
+                  )}
                 </button>
               ))}
             </div>
@@ -188,7 +189,8 @@ export function FilterBar({ filters, onChange, className = "" }: FilterBarProps)
             setIsStatusOpen(false);
             setIsTagsOpen(false);
           }}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800/40 border border-slate-700/50 hover:border-amber-500/50 text-slate-300 font-medium transition-all duration-300 ${filters.priority && filters.priority !== "all" ? '!border-amber-500 bg-amber-500/10 text-amber-400' : ''
+            }`}
         >
           <span>Priority</span>
           <svg
@@ -199,9 +201,6 @@ export function FilterBar({ filters, onChange, className = "" }: FilterBarProps)
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
-          {filters.priority && filters.priority !== "all" && (
-            <span className="w-2 h-2 bg-blue-500 rounded-full" />
-          )}
         </button>
 
         {isPriorityOpen && (
@@ -210,28 +209,31 @@ export function FilterBar({ filters, onChange, className = "" }: FilterBarProps)
               className="fixed inset-0 z-10"
               onClick={() => setIsPriorityOpen(false)}
             />
-            <div className="absolute left-0 mt-1 w-44 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20">
+            <div className="absolute left-0 mt-2 w-48 neon-card !rounded-2xl p-2 z-[60] animate-slide-up">
               {PRIORITY_OPTIONS.map((option) => (
                 <button
                   key={option.value}
                   type="button"
                   onClick={() => handlePriorityChange(option.value)}
-                  className={`w-full px-4 py-2 text-left text-sm flex items-center gap-2 transition-colors ${(filters.priority || "all") === option.value
-                      ? "bg-blue-50 text-blue-700"
-                      : "hover:bg-gray-50"
+                  className={`w-full px-4 py-2.5 rounded-xl text-left text-sm font-bold flex items-center gap-3 transition-all duration-200 mb-1 last:mb-0 ${(filters.priority || "all") === option.value
+                      ? "bg-amber-500/10 text-white"
+                      : "text-slate-400 hover:bg-slate-800/50 hover:text-slate-200"
                     }`}
                 >
                   {option.value !== "all" && (
                     <span
                       className={`w-2 h-2 rounded-full ${option.value === "HIGH"
-                          ? "bg-red-500"
-                          : option.value === "MEDIUM"
-                            ? "bg-amber-500"
-                            : "bg-green-500"
+                        ? "bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]"
+                        : option.value === "MEDIUM"
+                          ? "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]"
+                          : "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"
                         }`}
                     />
                   )}
                   {option.label}
+                  {(filters.priority || "all") === option.value && (
+                    <div className="ml-auto w-1.5 h-1.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]" />
+                  )}
                 </button>
               ))}
             </div>
@@ -248,7 +250,8 @@ export function FilterBar({ filters, onChange, className = "" }: FilterBarProps)
             setIsStatusOpen(false);
             setIsPriorityOpen(false);
           }}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800/40 border border-slate-700/50 hover:border-emerald-500/50 text-slate-300 font-medium transition-all duration-300 ${filters.tag_ids && filters.tag_ids.length > 0 ? '!border-emerald-500 bg-emerald-500/10 text-emerald-400' : ''
+            }`}
         >
           <span>Tags</span>
           <svg
@@ -259,9 +262,6 @@ export function FilterBar({ filters, onChange, className = "" }: FilterBarProps)
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
-          {filters.tag_ids && filters.tag_ids.length > 0 && (
-            <span className="w-2 h-2 bg-blue-500 rounded-full" />
-          )}
         </button>
 
         {isTagsOpen && (
@@ -270,31 +270,31 @@ export function FilterBar({ filters, onChange, className = "" }: FilterBarProps)
               className="fixed inset-0 z-10"
               onClick={() => setIsTagsOpen(false)}
             />
-            <div className="absolute left-0 mt-1 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20 max-h-60 overflow-auto">
+            <div className="absolute left-0 mt-2 w-64 neon-card !rounded-2xl p-2 z-[60] max-h-60 overflow-auto animate-slide-up">
               {loading ? (
-                <div className="px-4 py-2 text-sm text-gray-500">Loading tags...</div>
+                <div className="px-4 py-3 text-sm text-slate-500 font-medium">Loading tags...</div>
               ) : availableTags.length === 0 ? (
-                <div className="px-4 py-2 text-sm text-gray-500">No tags available</div>
+                <div className="px-4 py-3 text-sm text-slate-500 font-medium">No tags available</div>
               ) : (
                 availableTags.map((tag) => (
                   <button
                     key={tag.id}
                     type="button"
                     onClick={() => handleToggleTag(tag.id)}
-                    className={`w-full px-3 py-2 text-left text-sm flex items-center gap-2 transition-colors ${filters.tag_ids?.includes(tag.id)
-                        ? "bg-blue-50"
-                        : "hover:bg-gray-50"
+                    className={`w-full px-3 py-2 text-left text-sm flex items-center gap-3 rounded-xl transition-all mb-1 last:mb-0 ${filters.tag_ids?.includes(tag.id)
+                        ? "bg-slate-800"
+                        : "hover:bg-slate-800/50"
                       }`}
                   >
                     <div
-                      className={`w-4 h-4 rounded border flex items-center justify-center ${filters.tag_ids?.includes(tag.id)
-                          ? "bg-blue-500 border-blue-500"
-                          : "border-gray-300"
+                      className={`w-5 h-5 rounded-md flex items-center justify-center transition-all ${filters.tag_ids?.includes(tag.id)
+                          ? "bg-emerald-500 text-white shadow-[0_0_10px_rgba(16,185,129,0.4)]"
+                          : "border border-slate-600 bg-slate-800/50"
                         }`}
                     >
                       {filters.tag_ids?.includes(tag.id) && (
                         <svg
-                          className="w-3 h-3 text-white"
+                          className="w-3.5 h-3.5"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -319,7 +319,7 @@ export function FilterBar({ filters, onChange, className = "" }: FilterBarProps)
 
       {/* Selected tags display */}
       {selectedTags.length > 0 && (
-        <div className="flex items-center gap-1 ml-2">
+        <div className="flex items-center gap-2 ml-2">
           {selectedTags.slice(0, 3).map((tag) => (
             <TagBadge
               key={tag.id}
@@ -330,7 +330,7 @@ export function FilterBar({ filters, onChange, className = "" }: FilterBarProps)
             />
           ))}
           {selectedTags.length > 3 && (
-            <span className="text-sm text-gray-500">+{selectedTags.length - 3}</span>
+            <span className="text-xs font-bold text-slate-500">+{selectedTags.length - 3}</span>
           )}
         </div>
       )}
@@ -340,7 +340,7 @@ export function FilterBar({ filters, onChange, className = "" }: FilterBarProps)
         <button
           type="button"
           onClick={handleClearAll}
-          className="inline-flex items-center gap-1 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+          className="ml-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

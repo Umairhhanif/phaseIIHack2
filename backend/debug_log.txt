@@ -1,0 +1,55 @@
+DEBUG: execute_tool add_task params: {}
+DEBUG: add_task called with title='Untitled Task', user_id=a5cf5b9a-6bac-4c2f-94f1-cbce63732e02
+DEBUG: Committing task to database...
+DEBUG: Task committed. ID: dbddd0a5-1218-4a43-b980-9c3b5b3af219
+DEBUG: execute_tool list_tasks params: {}
+DEBUG: execute_tool add_task params: {}
+DEBUG: add_task called with title='Untitled Task', user_id=a5cf5b9a-6bac-4c2f-94f1-cbce63732e02
+DEBUG: Committing task to database...
+DEBUG: Task committed. ID: 9f92f360-7b1a-4caf-8bf1-0cfe3f6c9b5d
+DEBUG: execute_tool add_task params: {'title': 'buy milk', 'due_date': '2024-05-29'}
+DEBUG: add_task called with title='buy milk', user_id=a5cf5b9a-6bac-4c2f-94f1-cbce63732e02
+DEBUG: Committing task to database...
+DEBUG: Task committed. ID: 140c965c-472e-463a-abf2-d56c38c5aea6
+DEBUG: execute_tool list_tasks params: {}
+DEBUG: execute_tool delete_task params: {'task_id': 'buy milk'}
+DEBUG: execute_tool delete_task params: {'task_id': '1'}
+DEBUG: execute_tool delete_task params: {'task_id': 'buy milk'}
+DEBUG: execute_tool delete_task params: {'task_id': 'buy milk'}
+DEBUG: execute_tool add_task params: {'title': 'city court', 'due_date': '2023-08-24'}
+DEBUG: add_task called with title='city court', user_id=a5cf5b9a-6bac-4c2f-94f1-cbce63732e02
+DEBUG: Committing task to database...
+DEBUG: Task committed. ID: 21584088-0dc2-4d08-8ba4-284ec753c32b
+DEBUG: execute_tool add_task params: {'title': 'buy milk', 'due_date': '2024-06-07'}
+DEBUG: add_task called with title='buy milk', user_id=fe1e7d36-72e4-4b09-8db8-9754c741f297
+DEBUG: execute_tool add_task params: {'title': 'buy milk', 'priority': 'HIGH', 'due_date': '2024-05-15'}
+DEBUG: add_task called with title='buy milk', user_id=fe1e7d36-72e4-4b09-8db8-9754c741f297
+DEBUG: execute_tool add_task params: {'title': 'buy milk', 'priority': 'HIGH', 'due_date': '2023-09-08', 'tags': ['urgent']}
+DEBUG: add_task called with title='buy milk', user_id=fe1e7d36-72e4-4b09-8db8-9754c741f297
+DEBUG: execute_tool find_task_by_title params: {'title': 'buy milk'}
+DEBUG: execute_tool find_task_by_title params: {'title': 'car repairing'}
+DEBUG: execute_tool list_tasks params: {}
+DEBUG: execute_tool add_task params: {'title': 'Buy Milk', 'due_date': '2024-05-16'}
+DEBUG: add_task called with title='Buy Milk', user_id=a5cf5b9a-6bac-4c2f-94f1-cbce63732e02
+DEBUG: execute_tool add_task params: {'title': 'Buy Milk', 'due_date': '2024-05-17'}
+DEBUG: add_task called with title='Buy Milk', user_id=a5cf5b9a-6bac-4c2f-94f1-cbce63732e02
+DEBUG: execute_tool list_tasks params: {'status': 'URGENT'}
+DEBUG: execute_tool add_task params: {'title': 'Buy groceries', 'priority': 'HIGH', 'due_date': '2024-06-30'}
+DEBUG: add_task called with title='Buy groceries', user_id=a5cf5b9a-6bac-4c2f-94f1-cbce63732e02
+DEBUG: execute_tool add_task params: {'title': 'Buy groceries', 'priority': 'HIGH', 'due_date': '2024-06-30'}
+DEBUG: add_task called with title='Buy groceries', user_id=a5cf5b9a-6bac-4c2f-94f1-cbce63732e02
+DEBUG: execute_tool add_task params: {'title': 'buy milk', 'priority': 'MEDIUM', 'due_date': '2024-05-14'}
+DEBUG: add_task called with title='buy milk', user_id=a5cf5b9a-6bac-4c2f-94f1-cbce63732e02
+DEBUG: execute_tool add_task params: {'title': 'buy milk', 'priority': 'MEDIUM', 'due_date': '2024-05-21'}
+DEBUG: add_task called with title='buy milk', user_id=a5cf5b9a-6bac-4c2f-94f1-cbce63732e02
+DEBUG: Committing task to database...
+DEBUG: Task committed. ID: fae66289-628b-4130-a045-fc9f5f3fd9ed
+DEBUG: execute_tool add_task params: {'title': 'car repair', 'priority': 'MEDIUM', 'due_date': '2023-09-21'}
+DEBUG: add_task called with title='car repair', user_id=a5cf5b9a-6bac-4c2f-94f1-cbce63732e02
+DEBUG: Committing task to database...
+DEBUG: Task committed. ID: 1a4a14e0-ad75-48b5-befd-7304870215a1
+DEBUG: execute_tool add_task params: {'title': 'bike oil change', 'priority': 'MEDIUM', 'due_date': '2023-09-21'}
+DEBUG: add_task called with title='bike oil change', user_id=a5cf5b9a-6bac-4c2f-94f1-cbce63732e02
+DEBUG: Committing task to database...
+DEBUG: Task committed. ID: 7b70a7a6-a765-4545-b8db-615011c9769c
+DEBUG: execute_tool list_tasks params: {}
